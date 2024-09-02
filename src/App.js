@@ -3,7 +3,7 @@ import SearchIcon from './search.svg';
 import './App.css';
 import MovieCard from "./MovieCard";
 
-const API_URL = 'http://www.omdbapi.com?apikey=6c44d18b';
+const API_URL = 'https://www.omdbapi.com?apikey=6c44d18b';
 
 export default function App() {
     const [movies, setMovies] = useState([]);
@@ -11,21 +11,25 @@ export default function App() {
     const [debounceTimeout, setDebounceTimeout] = useState(null); // For debouncing
 
     const searchMovies = async (title) => {
-        try {
-            const response = await fetch(`${API_URL}&s=${title}`);
-            const data = await response.json();
-            
-            // Check if the response contains the "Search" property
-            if (data.Search) {
-                setMovies(data.Search);
-                console.log(data.Search);
-            } else {
-                setMovies([]); // Set an empty array if no movies are found
-            }
-        } catch (error) {
-            console.error("Failed to fetch movies:", error);
+    try {
+        const response = await fetch(`${API_URL}&s=${title}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+        
+        // Check if the response contains the "Search" property
+        if (data.Search) {
+            setMovies(data.Search);
+            console.log(data.Search);
+        } else {
+            setMovies([]); // Set an empty array if no movies are found
+        }
+    } catch (error) {
+        console.error("Failed to fetch movies:", error);
     }
+};
+
 
     useEffect(() => {
        
